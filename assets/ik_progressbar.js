@@ -48,7 +48,8 @@
 		this.notification = $('<div/>') // add div element to be used to notify about the status of download
 			.attr({
 						'aria-live': 'assertive', // set notofocation priority to high
-						'aria-atomic': 'additions' // notify only about newly added text
+						'aria-atomic': 'true',
+						'aria-relevant': 'additions' // notify only about newly added text
 				})
 			.addClass('ik_readersonly')
 			.appendTo(this.element);

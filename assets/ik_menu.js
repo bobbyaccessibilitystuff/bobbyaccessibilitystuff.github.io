@@ -138,7 +138,8 @@
         });
       $submenu
         .attr({
-            'aria-hidden': false
+            'aria-hidden': false,
+            'tabindex': 0
         });
 		}
 	};
@@ -212,7 +213,7 @@
  * @param {object} event.data.plugin - Reference to plugin.
  * @param {object} event.data.index - Index of a tab to be selected.
  */
- 
+
  Plugin.prototype.onKeyDown = function (event) {
 
     var plugin, $elem, $current, $next, $parent, $submenu, $selected;
@@ -234,6 +235,29 @@
                 $current.attr({'tabindex': -1}).next('li').attr({'tabindex': 0}).focus();
             }
 
+            if($current.hasClass('expandable') && $current.parents('ul').parents('li').hasClass('expandable')) {
+              plugin.showSubmenu(event);
+              $submenu.children('li:eq(0)').attr({'tabindex': 0}).focus();
+              event.stopPropagation();
+            }
+
+
+            // not tested this code below.
+
+            else if ($parentitem.hasClass('expandable')) {
+
+                if($parentitem.parents('ul').parents('li').hasClass('expandable')) {
+                  event.stopPropagation();
+                }
+
+                $parentitem.removeClass('expanded').attr({
+                    'tabindex': 0,
+                    'aria-expanded': false
+                }).focus();
+                plugin.collapseAll(plugin, $parentitem);
+
+            }
+
             break;
 
         case ik_utils.keys.left:
@@ -242,6 +266,20 @@
 
             if ($current.parents('ul').length == 1) {
                 $current.attr({'tabindex': -1}).prev('li').attr({'tabindex': 0}).focus();
+            }
+
+            if ($parentitem.hasClass('expandable')) {
+
+                if($parentitem.parents('ul').parents('li').hasClass('expandable')) {
+                  event.stopPropagation();
+                }
+
+                $parentitem.removeClass('expanded').attr({
+                    'tabindex': 0,
+                    'aria-expanded': false
+                }).focus();
+                plugin.collapseAll(plugin, $parentitem);
+
             }
 
             break;
@@ -264,6 +302,11 @@
 
             if($current.parents('ul').length > 1) {
                 $current.attr({'tabindex': -1}).next('li').attr({'tabindex': 0}).focus();
+            }
+
+            if($current.hasClass('expandable') && !$current.parents('ul').parents('li').hasClass('expandable')) {
+              plugin.showSubmenu(event);
+              $submenu.children('li:eq(0)').attr({'tabindex': 0}).focus();
             }
 
             break;
@@ -295,7 +338,14 @@
 
         case ik_utils.keys.enter:
 
-            plugin.activateMenuItem(event);
+            console.log(event);
+
+            if($current.hasClass('expandable') || $current.parents('ul').parents('li').hasClass('expandable')) {
+              plugin.showSubmenu(event);
+              $submenu.children('li:eq(0)').attr({'tabindex': 0}).focus();
+            } else {
+              plugin.activateMenuItem(event);
+            }
 
             break;
 

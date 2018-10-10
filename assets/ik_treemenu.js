@@ -293,6 +293,17 @@
               if($me.attr('aria-expanded') == 'false') {
                   plugin.toggleSubmenu($me);
               }
+
+              else if($me.attr('aria-expanded') == 'true') {
+
+                $visibleitems = $elem.find('[role=treeitem]:visible');
+                newindex = $visibleitems.index($me) + 1;
+
+                if (newindex > -1) {
+                    plugin.selectItem( $($visibleitems[newindex]), plugin );
+                }
+              }
+
               break;
           case ik_utils.keys.left:
               event.preventDefault();
@@ -301,6 +312,44 @@
               if($me.attr('aria-expanded') == 'true') {
                   plugin.toggleSubmenu($me);
               }
+
+              else if($me.parent('ul').parent('li').attr('aria-expanded') == 'true') {
+
+                $visibleitems = $elem.find('[role=treeitem]:visible');
+                newindex = $visibleitems.index($me) - 1;
+
+                if (newindex > -1) {
+                    plugin.selectItem( $me.parent('ul').parent('li'), plugin );
+                }
+              }
+
+              break;
+          case ik_utils.keys.home:
+            event.preventDefault();
+            event.stopPropagation();
+
+              $visibleitems = $elem.find('[role=treeitem]:visible');
+              newindex = $visibleitems.index(0);
+
+              if (newindex > -1) {
+                  plugin.selectItem( $($visibleitems[newindex]), plugin );
+              }
+
+              console.log('home');
+
+              break;
+          case ik_utils.keys.end:
+            event.preventDefault();
+            event.stopPropagation();
+
+            $visibleitems = $elem.find('[role=treeitem]:visible');
+            newindex = $visibleitems.length - 1;
+
+            if (newindex > -1) {
+                plugin.selectItem( $($visibleitems[newindex]), plugin );
+            }
+
+            console.log('end');
               break;
           case ik_utils.keys.enter:
           case ik_utils.keys.space:
